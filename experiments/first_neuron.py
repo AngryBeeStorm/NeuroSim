@@ -1,19 +1,42 @@
 from neurosim.neuron import LIFneuron
+import matplotlib.pyplot as plt
 
+
+times = []
+voltages = []
+spike_times = []
 
 neuron = LIFneuron()
-spike_count = 0
 
-for t in range(100): 
-    spiked = neuron.step(input_current=5.0)
+for t in range(500):
+    spiked = neuron.step(input_current=17.0)
+
+    times.append(t)
+    voltages.append(neuron.voltage)
 
     if spiked:
-        spike_count += 1
+        spike_times.append(t)
 
-    print(
-        f"Time: {t} ms",
-        f"Voltage: {neuron.voltage:.2f} mV",
-        f"Spiked: {spiked}"
+print(f"Total spikes: {len(spike_times)}")
+print(f"Spike times: {spike_times}")
+
+plt.plot(times, voltages)
+
+plt.xlabel("Time (ms)")
+plt.ylabel("Membrane potential (mV)")
+plt.title("LIF Neuron")
+
+plt.axhline(
+    y=neuron.v_threshold,
+    linestyle="--",
+    label="Spike threshold"
+)
+
+for spike_time in spike_times:
+    plt.axvline(
+        x=spike_time,
+        alpha=0.25
     )
 
-print(f"Total spikes: {spike_count}")
+plt.legend()
+plt.show()
