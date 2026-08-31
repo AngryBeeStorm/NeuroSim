@@ -1,6 +1,6 @@
 from neurosim.neuron import LIFneuron
 import matplotlib.pyplot as plt
-
+import random
 
 
 def add_pulse(stimulation, start_time, end_time, amplitude):
@@ -27,7 +27,7 @@ def score_spikes(target_spikes, actual_spikes, tolerance=10):
     return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
 
-def visualize_spike_times(spike_times, target_spikes, neuron):
+def visualize_spike_times(spike_times, target_spikes, neuron, stimulation):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     ax1.step(times, stimulation, where="post")
 
@@ -51,6 +51,20 @@ def visualize_spike_times(spike_times, target_spikes, neuron):
     ax2.legend()
     plt.show()
 
+def random_stimulation(simulation_length=500, num_pulses=3):
+    stimulation = [0.0] * simulation_length
+
+    for _ in range(num_pulses):
+        start = random.randint(0, simulation_length - 20)
+        duration = random.randint(1, 15)
+        amplitude = random.uniform(0, 100)
+
+        end = min(start + duration, simulation_length)
+
+        add_pulse(stimulation, start, end, amplitude)
+
+    return stimulation
+
 
 stimulation_length = 500  # milliseconds
 tolerance = 10
@@ -63,16 +77,7 @@ target_spikes = [100, 200, 400]
 
 
 
-stimulation = [0.0] * stimulation_length
-
-
-add_pulse(stimulation, 98, 102, 60.0)
-add_pulse(stimulation, 198, 202, 60.0)
-add_pulse(stimulation, 397, 402, 60.0)
-
-
-
-def run_simulation(stimulation):
+def run_simulation(stimulation, visual=False):
     neuron = LIFneuron()
 
     spike_times = []
@@ -91,12 +96,38 @@ def run_simulation(stimulation):
 
     print(f"Total spikes: {len(spike_times)}")
     print(f"Spike times: {spike_times}")
-    print(f"Score: {score_spikes(target_spikes, spike_times, tolerance)}")
 
 
-    visualize_spike_times(spike_times, target_spikes, neuron)
+    if visual:
+        visualize_spike_times(spike_times, target_spikes, neuron, stimulation)
+
     return spike_times
 
 
-spike_times = run_simulation(stimulation)
 
+best_score = -1
+best_stimulation = None
+best_spikes = None
+
+for i in range(1000):
+
+    candidate = random_stimulation()
+
+    actual_spikes = run_simulation(candidate)
+
+    score = score_spikes(
+        target_spikes,
+        actual_spikes
+    )
+
+    if score > best_score:
+        best_score = score
+        best_stimulation = candidate
+        best_spikes = actual_spikes
+
+        print(
+            f"New best! Candidate {i}: "
+            f"{best_score:.3f}"
+        )
+
+print(f"Best score: {best_score:.3f}")
