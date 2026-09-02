@@ -2,6 +2,7 @@ from neurosim.neuron import LIFneuron
 import matplotlib.pyplot as plt
 import random
 
+random.seed(42)
 
 def add_pulse(stimulation, start_time, end_time, amplitude):
     for t in range(start_time, end_time):
@@ -51,8 +52,8 @@ def visualize_spike_times(spike_times, target_spikes, neuron, stimulation):
     ax2.legend()
     plt.show()
 
-def random_stimulation(simulation_length=500, num_pulses=3):
-    stimulation = [0.0] * simulation_length
+def random_candidate(simulation_length=500, num_pulses=3):
+    candidate = []
 
     for _ in range(num_pulses):
         start = random.randint(0, simulation_length - 20)
@@ -61,7 +62,24 @@ def random_stimulation(simulation_length=500, num_pulses=3):
 
         end = min(start + duration, simulation_length)
 
-        add_pulse(stimulation, start, end, amplitude)
+        candidate.append((start, duration, amplitude))
+
+    candidate.sort(key=lambda pulse: pulse[0])
+
+    return candidate
+
+
+def candidate_to_stimulation(
+    candidate,
+    simulation_length=500
+):
+    stimulation = [0.0] * simulation_length
+
+    for start, duration, amplitude in candidate:
+        end = min(start + duration, simulation_length)
+
+        for t in range(start, end):
+            stimulation[t] = amplitude
 
     return stimulation
 
@@ -72,6 +90,7 @@ tolerance = 10
 
 times = []
 voltages = []
+best_score_history = []
 
 target_spikes = [100, 200, 400]
 
@@ -111,19 +130,22 @@ best_spikes = None
 
 for i in range(1000):
 
-    candidate = random_stimulation()
+    candidate = random_candidate()
+    stimulation = candidate_to_stimulation(candidate)
 
-    actual_spikes = run_simulation(candidate)
+    actual_spikes = run_simulation(stimulation)
 
     score = score_spikes(
         target_spikes,
         actual_spikes
     )
+    best_score_history.append(score)
 
     if score > best_score:
         best_score = score
-        best_stimulation = candidate
+        best_stimulation = stimulation
         best_spikes = actual_spikes
+        
 
         print(
             f"New best! Candidate {i}: "
@@ -131,3 +153,10 @@ for i in range(1000):
         )
 
 print(f"Best score: {best_score:.3f}")
+
+plt.plot(best_score_history)
+
+plt.xlabel("Candidate tested")
+plt.ylabel("Best score so far")
+plt.title("Random Search")
+plt.show()
