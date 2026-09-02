@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import copy
 
-random.seed(50)
+random.seed(49)
 
 def add_pulse(stimulation, start_time, end_time, amplitude):
     for t in range(start_time, end_time):
@@ -145,6 +145,141 @@ def mutate(candidate, chance=0.5):
     return child
 
 
+def plot_population_fitness(all_fitness):
+    plt.figure(figsize=(12, 6))
+
+    for generation, fitness_values in enumerate(all_fitness):
+
+        x_values = [
+            generation
+            for _ in fitness_values
+        ]
+
+        plt.scatter(
+            x_values,
+            fitness_values,
+            alpha=0.35,
+            s=15
+        )
+
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+    plt.title("NeuroSim — Population Fitness by Generation")
+
+    plt.ylim(-0.05, 1.05)
+
+    plt.show()
+
+
+def plot_fitness_history(best_history, average_history, worst_history):
+    generations_axis = range(
+        len(best_history)
+    )
+
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(
+        generations_axis,
+        best_history,
+        label="Best"
+    )
+
+    plt.plot(
+        generations_axis,
+        average_history,
+        label="Average"
+    )
+
+    plt.plot(
+        generations_axis,
+        worst_history,
+        label="Worst"
+    )
+
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+
+    plt.title(
+        "NeuroSim — Evolutionary Fitness"
+    )
+
+    plt.ylim(-0.05, 1.05)
+
+    plt.legend()
+
+    plt.show()
+
+
+def plot_best_solution(best_ever_history, best_history):
+    generations_axis = range(len(best_history))
+
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(
+        generations_axis,
+        best_ever_history
+    )
+
+    plt.xlabel("Generation")
+    plt.ylabel("Best fitness discovered")
+
+    plt.title(
+        "NeuroSim — Best Solution Found"
+    )
+
+    plt.ylim(-0.05, 1.05)
+
+    plt.show()
+
+
+
+def plot_fitness_distribution(all_fitness, best_history, average_history):
+    generations_axis = range(len(best_history))
+
+    plt.figure(figsize=(12, 6))
+
+    for generation, fitness_values in enumerate(all_fitness):
+
+        x_values = [
+            generation
+            for _ in fitness_values
+        ]
+
+        plt.scatter(
+            x_values,
+            fitness_values,
+            alpha=0.2,
+            s=10
+        )
+
+    plt.plot(
+        generations_axis,
+        average_history,
+        linewidth=2,
+        label="Population average"
+    )
+
+    plt.plot(
+        generations_axis,
+        best_history,
+        linewidth=2,
+        label="Generation best"
+    )
+
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+
+    plt.title("Evolution of Neural Stimulation")
+
+    plt.ylim(-0.05, 1.05)
+
+    plt.legend()
+
+    plt.show()
+
+
+
+
 
 stimulation_length = 500  # milliseconds
 tolerance = 10
@@ -158,9 +293,15 @@ target_spikes = [100, 200, 400]
 
 population = [random_candidate() for _ in range(population_size)]
 elite_count = 10
-generations = 2000
+generations = 50
 
 all_fitness = []
+best_history = []
+average_history = []
+worst_history = []
+best_ever_history = []
+
+best_ever = 0.0
 
 for generation in range(generations):
     evaluated = []
@@ -177,10 +318,19 @@ for generation in range(generations):
         f"{best_fitness:.3f}"
         )
 
+    #Stats for pretty graphs
     generation_fitness = [result[0] for result in evaluated]
-
     all_fitness.append(generation_fitness)
+    best = max(generation_fitness)
+    average = sum(generation_fitness) / len(generation_fitness)
+    worst = min(generation_fitness)
 
+    best_ever = max(best_ever, best)
+
+    best_history.append (best)
+    average_history.append(average)
+    worst_history.append(worst)
+    best_ever_history.append(best_ever)
 
     elites = evaluated[:elite_count]
 
@@ -195,3 +345,9 @@ for generation in range(generations):
             new_population.append(child)
 
     population = new_population
+
+
+plot_population_fitness(all_fitness)
+plot_fitness_history(best_history, average_history, worst_history)
+plot_best_solution(best_ever_history, best_history)
+plot_fitness_distribution(all_fitness, best_history, average_history)
