@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import copy
 
-random.seed(42)
+random.seed(50)
 
 def add_pulse(stimulation, start_time, end_time, amplitude):
     for t in range(start_time, end_time):
@@ -63,7 +63,7 @@ def random_candidate(simulation_length=500, num_pulses=3):
 
         end = min(start + duration, simulation_length)
 
-        candidate.append((start, duration, amplitude))
+        candidate.append([start, duration, amplitude])
 
     candidate.sort(key=lambda pulse: pulse[0])
 
@@ -86,7 +86,7 @@ def candidate_to_stimulation(
 
 
 
-def run_simulation(stimulation, visual=False):
+def run_simulation(stimulation, visual=False, print_spike_stats=False):
     neuron = LIFneuron()
 
     spike_times = []
@@ -102,9 +102,9 @@ def run_simulation(stimulation, visual=False):
         else:
             voltages.append(neuron.voltage)
 
-
-    print(f"Total spikes: {len(spike_times)}")
-    print(f"Spike times: {spike_times}")
+    if print_spike_stats:
+        print(f"Total spikes: {len(spike_times)}")
+        print(f"Spike times: {spike_times}")
 
 
     if visual:
@@ -158,13 +158,40 @@ target_spikes = [100, 200, 400]
 
 population = [random_candidate() for _ in range(population_size)]
 elite_count = 10
+generations = 2000
 
-evaluated = []
+all_fitness = []
 
-for candidate in population:
-    fitness, actual_spikes = evaluate_candidate(candidate, target_spikes)
-    evaluated.append((fitness, candidate, actual_spikes))
+for generation in range(generations):
+    evaluated = []
 
-evaluated.sort(key=lambda x: x[0], reverse=True)
-elites = evaluated[:elite_count]
+    for candidate in population:
+        fitness, actual_spikes = evaluate_candidate(candidate, target_spikes)
+        evaluated.append((fitness, candidate, actual_spikes))
 
+    evaluated.sort(key=lambda x: x[0], reverse=True)
+
+    best_fitness = evaluated[0][0]
+    print(
+        f"Generation {generation}: "
+        f"{best_fitness:.3f}"
+        )
+
+    generation_fitness = [result[0] for result in evaluated]
+
+    all_fitness.append(generation_fitness)
+
+
+    elites = evaluated[:elite_count]
+
+    new_population = []
+
+    for fitness, candidate, actual_spikes in elites:
+        new_population.append(copy.deepcopy(candidate))
+
+        while len(new_population) < population_size:
+            parent = random.choice(elites)[1]
+            child = mutate(parent)
+            new_population.append(child)
+
+    population = new_population
