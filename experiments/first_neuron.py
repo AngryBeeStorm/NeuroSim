@@ -84,17 +84,6 @@ def candidate_to_stimulation(
     return stimulation
 
 
-stimulation_length = 500  # milliseconds
-tolerance = 10
-
-
-times = []
-voltages = []
-best_score_history = []
-
-target_spikes = [100, 200, 400]
-
-
 
 def run_simulation(stimulation, visual=False):
     neuron = LIFneuron()
@@ -124,6 +113,21 @@ def run_simulation(stimulation, visual=False):
 
 
 
+stimulation_length = 500  # milliseconds
+tolerance = 10
+
+
+times = []
+voltages = []
+best_score_history = []
+
+target_spikes = [100, 200, 400]
+
+
+
+
+
+
 best_score = -1
 best_stimulation = None
 best_spikes = None
@@ -131,6 +135,7 @@ best_spikes = None
 for i in range(1000):
 
     candidate = random_candidate()
+    print(candidate)
     stimulation = candidate_to_stimulation(candidate)
 
     actual_spikes = run_simulation(stimulation)
