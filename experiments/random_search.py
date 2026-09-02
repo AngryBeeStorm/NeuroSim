@@ -112,19 +112,22 @@ def run_simulation(stimulation, visual=False):
     return spike_times
 
 
+def evaluate_candidate(candidate, target_spikes):
+    stimulation = candidate_to_stimulation(candidate, simulation_length=stimulation_length)
+    actual_spikes = run_simulation(stimulation)
+    fitness = score_spikes(target_spikes, actual_spikes)
+    return fitness, actual_spikes
+
+
 
 stimulation_length = 500  # milliseconds
 tolerance = 10
-
 
 times = []
 voltages = []
 best_score_history = []
 
 target_spikes = [100, 200, 400]
-
-
-
 
 
 
@@ -136,20 +139,14 @@ for i in range(1000):
 
     candidate = random_candidate()
     print(candidate)
-    stimulation = candidate_to_stimulation(candidate)
 
-    actual_spikes = run_simulation(stimulation)
-
-    score = score_spikes(
-        target_spikes,
-        actual_spikes
-    )
+    score = evaluate_candidate(candidate, target_spikes)[0]
     best_score_history.append(score)
 
     if score > best_score:
         best_score = score
-        best_stimulation = stimulation
-        best_spikes = actual_spikes
+        #best_stimulation = stimulation
+        #best_spikes = actual_spikes
         
 
         print(
