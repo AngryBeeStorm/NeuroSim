@@ -82,4 +82,3 @@ for generation in range(generations):
 
 
 plot_fitness_distribution(all_fitness, best_history, average_history)
-plot_fitness_history(best_history, average_history, worst_history)
