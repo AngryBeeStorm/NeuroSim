@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import copy
 
-random.seed(52)
+random.seed(54)
 
 def add_pulse(stimulation, start_time, end_time, amplitude):
     for t in range(start_time, end_time):
@@ -145,6 +145,20 @@ def mutate(candidate, chance=0.5):
     return child
 
 
+def crossover(parent_a, parent_b):
+    child = []
+
+    for pulse_a, pulse_b in zip(parent_a, parent_b):
+        if random.random() < 0.5:
+            child.append(copy.deepcopy(pulse_a))
+        else:
+            child.append(copy.deepcopy(pulse_b))
+
+    child.sort(key=lambda pulse: pulse[0])
+
+    return child
+
+
 def plot_population_fitness(all_fitness):
     plt.figure(figsize=(12, 6))
 
@@ -164,7 +178,7 @@ def plot_population_fitness(all_fitness):
 
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
-    plt.title("Population Fitness by Generation")
+    plt.title("NeuroSim — Population Fitness by Generation")
 
     plt.ylim(-0.05, 1.05)
 
@@ -288,18 +302,20 @@ times = []
 voltages = []
 best_score_history = []
 
-target_spikes = [160, 305, 460]
+target_spikes = [100, 200, 400]
 
 
 population = [random_candidate() for _ in range(population_size)]
-elite_count = 20
+elite_count = 15
 generations = 50
+immigrant_count = 5
 
 all_fitness = []
 best_history = []
 average_history = []
 worst_history = []
 best_ever_history = []
+
 
 best_ever = 0.0
 
@@ -339,10 +355,16 @@ for generation in range(generations):
     for fitness, candidate, actual_spikes in elites:
         new_population.append(copy.deepcopy(candidate))
 
-        while len(new_population) < population_size:
-            parent = random.choice(elites)[1]
-            child = mutate(parent)
+        while len(new_population) < population_size - immigrant_count:
+            parent_a = random.choice(elites)[1]
+            parent_b = random.choice(elites)[1]
+
+            child = crossover(parent_a, parent_b)
+            child = mutate(child)
             new_population.append(child)
+
+    for _ in range(immigrant_count):
+        new_population.append(random_candidate())
 
     population = new_population
 

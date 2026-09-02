@@ -127,7 +127,7 @@ times = []
 voltages = []
 best_score_history = []
 
-target_spikes = [100, 200, 400]
+target_spikes = [160, 305, 460]
 
 
 
