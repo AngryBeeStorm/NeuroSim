@@ -15,7 +15,7 @@ def run_evolution(
     num_pulses=3,
     population_size=50,
     generations=100,
-    stimulation_length=500,
+    stimulation_length=1000,
     elite_count=15,
     immigrant_count=5,
     manual = False,
@@ -99,7 +99,7 @@ def run_evolution(
                 parent_b = random.choice(elites)[1]
 
                 child = crossover(parent_a, parent_b)
-                child = mutate(child)
+                child = mutate(child, stimulation_length=stimulation_length)
                 new_population.append(child)
 
         for _ in range(immigrant_count):
@@ -108,7 +108,8 @@ def run_evolution(
         population = new_population
 
     best_stimulation = candidate_to_stimulation(
-        best_ever_candidate
+        best_ever_candidate,
+        simulation_length=stimulation_length
     )
 
     return {

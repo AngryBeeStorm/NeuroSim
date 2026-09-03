@@ -1,7 +1,7 @@
 import copy
 import random
 
-stimulation_length = 500
+#stimulation_length = 500
 
 
 def score_spikes(target_spikes, actual_spikes, tolerance=10):
@@ -24,7 +24,7 @@ def score_spikes(target_spikes, actual_spikes, tolerance=10):
     return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
 
-def mutate(candidate, chance=0.5):
+def mutate(candidate, chance=0.5, stimulation_length=500):
     child = copy.deepcopy(candidate)
 
     for pulse in child:
