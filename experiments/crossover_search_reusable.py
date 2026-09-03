@@ -18,7 +18,7 @@ def run_evolution(
     stimulation_length=500,
     elite_count=15,
     immigrant_count=5,
-    tolerance=10,
+    manual = False,
 ):
 
     times = []
@@ -44,6 +44,12 @@ def run_evolution(
     best_ever_candidate = None
     best_ever_spikes = None
     best_ever_generation = None
+
+    #automaticaly make 30% of population size elites and 10% of population size immigrants
+    if not manual:
+        elite_count = max(1, int(population_size * 0.3))
+        immigrant_count = max(1, int(population_size * 0.1))
+    
 
 
 
