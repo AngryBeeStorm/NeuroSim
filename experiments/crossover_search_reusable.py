@@ -12,8 +12,9 @@ random.seed(43)
 
 def run_evolution(
     target_spikes,
+    num_pulses=3,
     population_size=50,
-    generations=10,
+    generations=100,
     stimulation_length=500,
     elite_count=15,
     immigrant_count=5,
@@ -22,9 +23,7 @@ def run_evolution(
 
     times = []
     voltages = []
-    best_score_history = []
 
-    target_spikes = [100, 200, 400]
 
     stimulation_functions.stimulation_length = stimulation_length
     stimulation_functions.target_spikes = target_spikes
@@ -32,10 +31,8 @@ def run_evolution(
     stimulation_functions.voltages = voltages
     evolutionary_functions.stimulation_length = stimulation_length
 
-    population = [random_candidate() for _ in range(population_size)]
-    elite_count = 15
-    generations = 100
-    immigrant_count = 5
+    population = [random_candidate(stimulation_length, num_pulses) for _ in range(population_size)]
+
 
     all_fitness = []
     best_history = []
@@ -100,7 +97,7 @@ def run_evolution(
                 new_population.append(child)
 
         for _ in range(immigrant_count):
-            new_population.append(random_candidate())
+            new_population.append(random_candidate(stimulation_length, num_pulses))
 
         population = new_population
 

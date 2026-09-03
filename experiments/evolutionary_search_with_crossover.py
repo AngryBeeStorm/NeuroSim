@@ -16,7 +16,8 @@ times = []
 voltages = []
 best_score_history = []
 
-target_spikes = [100, 200, 400]
+target_spikes = [100, 200, 430]
+pulse_count = len(target_spikes)
 
 stimulation_functions.stimulation_length = stimulation_length
 stimulation_functions.target_spikes = target_spikes
