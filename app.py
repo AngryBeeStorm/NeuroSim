@@ -129,7 +129,10 @@ st.caption(
     f"{len(st.session_state.target_spikes)} target spikes "
     f"across {st.session_state.stimulation_length} ms"
 )
-
+if preset_name != "Custom":
+    st.info(
+        f"Preset description: {PRESETS[preset_name]['description']}"
+    )
 
 st.divider()
 
