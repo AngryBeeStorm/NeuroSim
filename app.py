@@ -26,7 +26,6 @@ def parse_spike_times(text):
 
 
 
-
 def apply_preset():
     preset_name = st.session_state.preset_name
 
@@ -125,12 +124,11 @@ fig = draw_target_timeline(
     st.session_state.target_spikes,
     stimulation_length=st.session_state.stimulation_length
 )
-
-
-
 st.pyplot(fig)
-
-
+st.caption(
+    f"{len(st.session_state.target_spikes)} target spikes "
+    f"across {st.session_state.stimulation_length} ms"
+)
 
 
 st.divider()
