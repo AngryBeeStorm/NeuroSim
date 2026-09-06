@@ -1,6 +1,8 @@
 import streamlit as st
-from experiments.crossover_search_reusable import run_evolution
+from experiments.crossover_search_reusable import run_evolution_crossover
 import matplotlib.pyplot as plt
+from experiments.evolutionary_search import run_evolution_mutation
+from experiments.random_search import run_evolution_random
 from neurosim.presets import PRESETS, preset_spikes
 from neurosim.plotting import plot_best_solution_result, draw_target_timeline
 
@@ -163,7 +165,7 @@ if st.button("Find stimulation"):
     target_spikes = st.session_state.target_spikes
     st.write("Parsed target:", target_spikes)
 
-    result = run_evolution(
+    result = run_evolution_crossover(
         target_spikes=target_spikes,
         num_pulses = num_spikes,
         population_size=population_size,

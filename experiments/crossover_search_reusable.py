@@ -10,7 +10,7 @@ from experiments.visualizer_functions import plot_fitness_distribution
 random.seed(43)
 
 
-def run_evolution(
+def run_evolution_crossover(
     target_spikes,
     num_pulses=3,
     population_size=50,
