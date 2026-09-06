@@ -76,8 +76,21 @@ def run_simulation(stimulation, visual=False, print_spike_stats=False):
     return spike_times
 
 
-def evaluate_candidate(candidate, target_spikes):
+def stimulation_cost(stimulation, max_amplitude=100.0):
+    if not stimulation:
+        return 0.0
+
+    total = sum(abs(value) for value in stimulation)
+    maximum_possible = len(stimulation) * max_amplitude
+
+    return total / maximum_possible
+
+
+
+def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01):
     stimulation = candidate_to_stimulation(candidate, simulation_length=stimulation_length)
     actual_spikes = run_simulation(stimulation)
     fitness = score_spikes(target_spikes, actual_spikes)
+    cost = stimulation_cost(stimulation)
+    fitness -= stimulation_penalty * cost
     return fitness, actual_spikes

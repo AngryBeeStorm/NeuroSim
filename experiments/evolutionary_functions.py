@@ -3,7 +3,6 @@ import random
 
 #stimulation_length = 500
 
-
 def score_spikes(target_spikes, actual_spikes, tolerance=10):
     matches = 0
     matched_actual = set()
