@@ -1,23 +1,36 @@
 
 
+
+def preset_spikes(name, simulation_length):
+    positions = PRESETS[name]["positions"]
+
+    return [
+        int(position * simulation_length)
+        for position in positions
+    ]
+
+
 PRESETS = {
     "Regular": {
-        "spikes": [100, 200, 300, 400],
+        "positions": [0.2, 0.4, 0.6, 0.8],
         "description": "Evenly spaced firing."
     },
 
     "Burst": {
-        "spikes": [200, 210, 220],
-        "description": "A cluster of rapid spikes."
+        "positions": [0.40, 0.42, 0.44],
+        "description": "A short cluster of rapid spikes."
     },
 
     "Double burst": {
-        "spikes": [100, 110, 120, 350, 360, 370],
-        "description": "Two separate bursts of activity."
+        "positions": [
+            0.20, 0.22, 0.24,
+            0.70, 0.72, 0.74
+        ],
+        "description": "Two distinct bursts."
     },
 
     "Sparse": {
-        "spikes": [100, 400],
-        "description": "Two widely separated spikes."
+        "positions": [0.2, 0.8],
+        "description": "Widely separated activity."
     }
 }

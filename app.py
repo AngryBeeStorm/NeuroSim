@@ -1,7 +1,19 @@
 import streamlit as st
 from experiments.crossover_search_reusable import run_evolution
 import matplotlib.pyplot as plt
-from neurosim.presets import PRESETS
+from neurosim.presets import PRESETS, preset_spikes
+
+if "target_spikes" not in st.session_state:
+    st.session_state.target_spikes = [100, 200, 400]
+
+if "num_spikes" not in st.session_state:
+    st.session_state.num_spikes = 3
+
+if "stimulation_length" not in st.session_state:
+    st.session_state.stimulation_length = 500
+
+
+
 
 def parse_spike_times(text):
     return [
@@ -38,31 +50,28 @@ def draw_target_timeline(spikes, stimulation_length=500):
     return fig
 
 
+
+
+
 def apply_preset():
     preset_name = st.session_state.preset_name
 
     if preset_name == "Custom":
         return
 
-    preset = PRESETS[preset_name]
+    spikes = preset_spikes(
+        preset_name,
+        st.session_state.stimulation_length
+    )
 
-    st.session_state.target_spikes = preset["spikes"].copy()
-    st.session_state.num_spikes = len(preset["spikes"])
+    st.session_state.target_spikes = spikes
+    st.session_state.num_spikes = len(spikes)
 
-    for i, spike in enumerate(preset["spikes"]):
+    for i, spike in enumerate(spikes):
         st.session_state[f"spike_slider_{i}"] = spike
 
 
 
-
-if "target_spikes" not in st.session_state:
-    st.session_state.target_spikes = [100, 200, 400]
-
-if "num_spikes" not in st.session_state:
-    st.session_state.num_spikes = 3
-
-if "stimulation_length" not in st.session_state:
-    st.session_state.stimulation_length = 500
 
 
 
