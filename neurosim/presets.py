@@ -34,3 +34,34 @@ PRESETS = {
         "description": "Widely separated activity."
     }
 }
+
+
+IZHIKEVICH_PRESETS = {
+    "Regular spiking": {
+        "a": 0.02,
+        "b": 0.2,
+        "c": -65,
+        "d": 8,
+    },
+
+    "Intrinsically bursting": {
+        "a": 0.02,
+        "b": 0.2,
+        "c": -55,
+        "d": 4,
+    },
+
+    "Fast spiking": {
+        "a": 0.1,
+        "b": 0.2,
+        "c": -65,
+        "d": 2,
+    },
+
+    "Chattering": {
+        "a": 0.02,
+        "b": 0.2,
+        "c": -50,
+        "d": 2,
+    },
+}

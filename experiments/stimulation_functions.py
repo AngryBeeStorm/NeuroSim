@@ -1,4 +1,4 @@
-from neurosim.neuron import LIFneuron
+from neurosim.lif import LIFneuron
 import random
 
 from experiments.evolutionary_functions import score_spikes

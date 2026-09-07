@@ -1,8 +1,9 @@
 from neurosim.izhikevich import IzhikevichNeuron
+from neurosim.presets import IZHIKEVICH_PRESETS
 import matplotlib.pyplot as plt
 
 
-def plot_voltage(voltages, spikes):
+def plot_voltage(voltages, spikes, preset_name):
     time = range(len(voltages))
 
     plt.figure(figsize=(10, 4))
@@ -24,7 +25,7 @@ def plot_voltage(voltages, spikes):
 
     plt.xlabel("Time (ms)")
     plt.ylabel("Membrane voltage  (mV)")
-    plt.title("Izhikevich Neuron spike plot")
+    plt.title(f"Izhikevich Neuron: {preset_name}")
     plt.legend()
 
     plt.tight_layout()
@@ -32,22 +33,20 @@ def plot_voltage(voltages, spikes):
 
 
 
-neuron = IzhikevichNeuron()
+simulation_length = 500
+current = 10
 
-voltages = []
-spikes = []
+for preset_name, parameters in IZHIKEVICH_PRESETS.items():
+    neuron = IzhikevichNeuron(**parameters)
+    voltages = []
+    spikes = []
 
-for t in range(500):
+    for time in range(simulation_length):
+        spike, display_voltage = neuron.step(current)
+        voltages.append(display_voltage)
 
-    current = 10
+        if spike:
+            spikes.append(time)
 
-    spike = neuron.step(current)
-
-    voltages.append(neuron.v)
-
-    if spike:
-        spikes.append(t)
-
-print(spikes)
-
-plot_voltage(voltages, spikes)
+    print(f"{preset_name}: {spikes}")
+    plot_voltage(voltages, spikes, preset_name)

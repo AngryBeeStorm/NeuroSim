@@ -16,19 +16,33 @@ class IzhikevichNeuron:
         self.u = self.b * self.v
 
     def step(self, current):
+        for _ in range(2):
+            dv = (
+                0.04 * self.v**2
+                + 5 * self.v
+                + 140
+                - self.u
+                + current
+            )
 
-        dv = (0.04 * self.v**2 + 5 * self.v + 140 - self.u + current)
+            self.v += 0.5 * dv
 
-        du = self.a * (self.b * self.v - self.u)
+        du = self.a * (
+            self.b * self.v
+            - self.u
+        )
 
-        self.v += dv
         self.u += du
 
         spike = False
+        display_voltage = self.v
 
         if self.v >= 30:
+            display_voltage = 30.0
+
             self.v = self.c
             self.u += self.d
+
             spike = True
 
-        return spike
+        return spike, display_voltage
