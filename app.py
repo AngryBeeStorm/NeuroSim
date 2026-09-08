@@ -13,9 +13,16 @@ benchmarks = st.Page(
     icon="📊"
 )
 
+about = st.Page(
+    "pages/about.py",
+    title="About NeuroSim",
+    icon="ℹ️"
+)
+
 navigation = st.navigation([
     simulator,
-    benchmarks
+    benchmarks,
+    about
 ])
 
 navigation.run()
