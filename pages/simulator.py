@@ -3,7 +3,7 @@ from experiments.crossover_search_reusable import run_evolution_crossover
 import matplotlib.pyplot as plt
 from experiments.evolutionary_search import run_evolution_mutation
 from experiments.random_search import run_evolution_random
-from neurosim.presets import PRESETS, preset_spikes
+from neurosim.presets import IZHIKEVICH_PRESETS, PRESETS, preset_spikes
 from neurosim.plotting import plot_best_solution_result, draw_target_timeline
 
 if "target_spikes" not in st.session_state:
@@ -66,13 +66,20 @@ model_name = st.selectbox(
 if model_name == "LIF":
     neuron_params = {}
 
+if model_name == "Izhikevich":
+    subtype = st.selectbox(
+        "Izhikevich subtype",
+        [
+            "Regular spiking",
+            "Intrinsically bursting",
+            "Fast spiking",
+            "Chattering"
+        ]
+    )
+
+    neuron_params = IZHIKEVICH_PRESETS[subtype]
 else:
-    neuron_params = {
-        "a": 0.02,
-        "b": 0.2,
-        "c": -65.0,
-        "d": 8.0
-    }
+    neuron_params = {}
 
 preset_name = st.selectbox(
     "Target preset",
