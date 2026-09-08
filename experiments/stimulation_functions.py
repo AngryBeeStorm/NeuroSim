@@ -1,3 +1,4 @@
+from neurosim.factory import create_neuron
 from neurosim.lif import LIFneuron
 import random
 
@@ -49,13 +50,13 @@ def candidate_to_stimulation(
     return stimulation
 
 
-def run_simulation(stimulation, visual=False, print_spike_stats=False):
-    neuron = LIFneuron()
+def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_model="LIF"):
+    neuron = create_neuron(neuron_model)
 
     spike_times = []
 
     for t in range(stimulation_length):
-        spiked = neuron.step(input_current=stimulation[t])
+        spiked, voltage = neuron.step(current=stimulation[t])
 
         times.append(t)
 
@@ -87,9 +88,9 @@ def stimulation_cost(stimulation, max_amplitude=100.0):
 
 
 
-def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01):
+def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model="LIF"):
     stimulation = candidate_to_stimulation(candidate, simulation_length=stimulation_length)
-    actual_spikes = run_simulation(stimulation)
+    actual_spikes = run_simulation(stimulation, neuron_model=neuron_model)
     fitness = score_spikes(target_spikes, actual_spikes)
     cost = stimulation_cost(stimulation)
     fitness -= stimulation_penalty * cost

@@ -9,12 +9,20 @@ class LIFneuron:
 
         self.voltage = self.v_reset
 
-    def step(self, input_current):
-        dv = (-(self.voltage - self.v_rest) + input_current) / self.tau
+    def step(self, current):
+        dv = (
+            -(self.voltage - self.v_rest)
+            + current
+        ) / self.tau
+
         self.voltage += dv * self.dt
 
+        display_voltage = self.voltage
+        spiked = False
+
         if self.voltage >= self.v_threshold:
+            display_voltage = self.v_threshold
             self.voltage = self.v_reset
-            return True  # Spiked
-        
-        return False  # Did not spike
+            spiked = True
+
+        return spiked, display_voltage
