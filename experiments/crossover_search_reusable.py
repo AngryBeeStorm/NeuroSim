@@ -19,7 +19,8 @@ def run_evolution_crossover(
     elite_count=15,
     immigrant_count=5,
     manual = False,
-    neuron_model="LIF"
+    neuron_model="LIF",
+    neuron_params=None
 ):
 
     times = []
@@ -60,7 +61,7 @@ def run_evolution_crossover(
         evaluated = []
 
         for candidate in population:
-            fitness, actual_spikes = evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model=neuron_model)
+            fitness, actual_spikes = evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model=neuron_model, neuron_params=neuron_params)
             evaluated.append((fitness, candidate, actual_spikes))
 
         evaluated.sort(key=lambda x: x[0], reverse=True)

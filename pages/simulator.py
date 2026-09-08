@@ -58,6 +58,22 @@ st.write("AI-assisted neural simulation sandbox")
 col1, col2 = st.columns([4, 1])
 
 
+model_name = st.selectbox(
+    "Neuron model",
+    ["LIF", "Izhikevich"]
+)
+
+if model_name == "LIF":
+    neuron_params = {}
+
+else:
+    neuron_params = {
+        "a": 0.02,
+        "b": 0.2,
+        "c": -65.0,
+        "d": 8.0
+    }
+
 preset_name = st.selectbox(
     "Target preset",
     ["Custom"] + list(PRESETS.keys()),
@@ -170,7 +186,9 @@ if st.button("Find stimulation"):
         num_pulses = num_spikes,
         population_size=population_size,
         generations=generations,
-        stimulation_length=st.session_state.stimulation_length
+        stimulation_length=st.session_state.stimulation_length,
+        neuron_model=model_name,
+        neuron_params=neuron_params
     )
 
     st.write(

@@ -50,8 +50,14 @@ def candidate_to_stimulation(
     return stimulation
 
 
-def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_model="LIF"):
-    neuron = create_neuron(neuron_model)
+def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_model="LIF", neuron_params=None):
+    if neuron_params is None:
+        neuron_params = {}
+
+    neuron = create_neuron(
+        model_name=neuron_model,
+        **neuron_params
+    )
 
     spike_times = []
 
@@ -62,9 +68,10 @@ def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_mo
 
         if spiked:
             spike_times.append(t)
-            voltages.append(neuron.v_threshold)
+            if neuron_model == "LIF":
+                voltages.append(neuron.v_threshold)
         else:
-            voltages.append(neuron.voltage)
+            voltages.append(voltage)
 
     if print_spike_stats:
         print(f"Total spikes: {len(spike_times)}")
@@ -88,9 +95,9 @@ def stimulation_cost(stimulation, max_amplitude=100.0):
 
 
 
-def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model="LIF"):
+def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model="LIF", neuron_params=None):
     stimulation = candidate_to_stimulation(candidate, simulation_length=stimulation_length)
-    actual_spikes = run_simulation(stimulation, neuron_model=neuron_model)
+    actual_spikes = run_simulation(stimulation, neuron_model=neuron_model, neuron_params=neuron_params)
     fitness = score_spikes(target_spikes, actual_spikes)
     cost = stimulation_cost(stimulation)
     fitness -= stimulation_penalty * cost
