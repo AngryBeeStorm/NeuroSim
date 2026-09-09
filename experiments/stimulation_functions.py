@@ -115,4 +115,5 @@ def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuro
     fitness = score_spikes(target_spikes, actual_spikes)
     cost = stimulation_cost(stimulation)
     fitness -= stimulation_penalty * cost
+    fitness = max(0.0, fitness)
     return fitness, actual_spikes

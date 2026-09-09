@@ -6,6 +6,7 @@ from experiments.evolutionary_functions import crossover, mutate
 from experiments.stimulation_functions import candidate_to_stimulation, evaluate_candidate, random_candidate
 from experiments import evolutionary_functions, stimulation_functions, visualizer_functions
 from experiments.visualizer_functions import plot_fitness_distribution
+from neurosim.surrogate import flatten_candidate
 
 random.seed(43)
 
@@ -26,6 +27,10 @@ def run_evolution_crossover(
 
     times = []
     voltages = []
+
+
+    training_X = []
+    training_y = []
 
 
     stimulation_functions.stimulation_length = stimulation_length
@@ -64,6 +69,10 @@ def run_evolution_crossover(
         for candidate in population:
             fitness, actual_spikes = evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model=neuron_model, neuron_params=neuron_params, noise_std=noise_std)
             evaluated.append((fitness, candidate, actual_spikes))
+
+            #ai training 
+            training_X.append(flatten_candidate(candidate))
+            training_y.append(fitness)
 
         evaluated.sort(key=lambda x: x[0], reverse=True)
 
@@ -124,6 +133,9 @@ def run_evolution_crossover(
     "best_history": best_history,
     "average_history": average_history,
     "worst_history": worst_history,
-    "best_ever_history": best_ever_history
+    "best_ever_history": best_ever_history,
+
+    "training_X": training_X,
+    "training_y": training_y,   
     }
 

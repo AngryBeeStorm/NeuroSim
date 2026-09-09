@@ -207,6 +207,14 @@ if st.button("Find stimulation"):
         neuron_params=neuron_params,
         noise_std = noise_std
     )
+    training_X = result["training_X"]
+    training_y = result["training_y"]
+
+    print("Samples:", len(training_X))
+    print("Labels:", len(training_y))
+    print("Minimum fitness:", min(training_y))
+    print("Maximum fitness:", max(training_y))
+    print("Unique fitness values:", len(set(training_y)))
 
     st.write(
         f"Best fitness: {result['score']:.3f}"
