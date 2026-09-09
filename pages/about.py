@@ -48,12 +48,20 @@ subtype = st.selectbox(
             "Chattering"
         ]
     )
+
+preview_current = st.slider(
+    "Input current (I)",
+    min_value=0,
+    max_value=50,
+    value=10,
+    step=1
+)
 neuron_params = IZHIKEVICH_PRESETS[subtype]
 
 neuron = IzhikevichNeuron(**neuron_params)
 
 simulation_length = 500
-current = 10
+current = preview_current
 
 if st.button("Run Simulation"):
     voltages = []

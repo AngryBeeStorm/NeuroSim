@@ -13,6 +13,16 @@ stimulation_length = 500
 target_spikes = []
 
 
+def apply_noise(current, noise_std):
+    if noise_std <= 0:
+        return current
+
+    return current + random.gauss(
+        0.0,
+        noise_std
+    )
+
+
 def add_pulse(stimulation, start_time, end_time, amplitude):
     for t in range(start_time, end_time):
         stimulation[t] = amplitude
@@ -50,7 +60,7 @@ def candidate_to_stimulation(
     return stimulation
 
 
-def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_model="LIF", neuron_params=None):
+def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_model="LIF", neuron_params=None, noise_std=0.0,):
     if neuron_params is None:
         neuron_params = {}
 
@@ -62,7 +72,11 @@ def run_simulation(stimulation, visual=False, print_spike_stats=False, neuron_mo
     spike_times = []
 
     for t in range(stimulation_length):
-        spiked, voltage = neuron.step(current=stimulation[t])
+
+        
+
+        noisy_current = apply_noise(stimulation[t], noise_std)
+        spiked, voltage = neuron.step(current = noisy_current)
 
         times.append(t)
 
@@ -95,9 +109,9 @@ def stimulation_cost(stimulation, max_amplitude=100.0):
 
 
 
-def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model="LIF", neuron_params=None):
+def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuron_model="LIF", neuron_params=None, noise_std = 0.0):
     stimulation = candidate_to_stimulation(candidate, simulation_length=stimulation_length)
-    actual_spikes = run_simulation(stimulation, neuron_model=neuron_model, neuron_params=neuron_params)
+    actual_spikes = run_simulation(stimulation, neuron_model=neuron_model, neuron_params=neuron_params, noise_std=noise_std)
     fitness = score_spikes(target_spikes, actual_spikes)
     cost = stimulation_cost(stimulation)
     fitness -= stimulation_penalty * cost

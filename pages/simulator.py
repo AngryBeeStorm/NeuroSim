@@ -159,6 +159,15 @@ if preset_name != "Custom":
         f"Preset description: {PRESETS[preset_name]['description']}"
     )
 
+
+noise_std = st.slider(
+    "Neural noise",
+    min_value=0.0,
+    max_value=20.0,
+    value=0.0,
+    step=0.5
+)
+
 st.divider()
 
 
@@ -195,7 +204,8 @@ if st.button("Find stimulation"):
         generations=generations,
         stimulation_length=st.session_state.stimulation_length,
         neuron_model=model_name,
-        neuron_params=neuron_params
+        neuron_params=neuron_params,
+        noise_std = noise_std
     )
 
     st.write(
