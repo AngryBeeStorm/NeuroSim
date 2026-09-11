@@ -2,7 +2,7 @@ from neurosim.factory import create_neuron
 from neurosim.lif import LIFneuron
 import random
 
-from experiments.evolutionary_functions import score_spikes
+from experiments.evolutionary_functions import score_spikes, repair_candidate
 from experiments.visualizer_functions import visualize_spike_times
 
 
@@ -34,7 +34,7 @@ def random_candidate(simulation_length=500, num_pulses=3):
     for _ in range(num_pulses):
         start = random.randint(0, simulation_length - 20)
         duration = random.randint(1, 15)
-        amplitude = random.uniform(0, 100)
+        amplitude = random.uniform(5, 100)
 
         end = min(start + duration, simulation_length)
 
@@ -42,7 +42,9 @@ def random_candidate(simulation_length=500, num_pulses=3):
 
     candidate.sort(key=lambda pulse: pulse[0])
 
-    return candidate
+    repaired_candidate = repair_candidate(candidate, stimulation_length=stimulation_length, min_gap=5)
+
+    return repaired_candidate
 
 
 def candidate_to_stimulation(
@@ -116,4 +118,5 @@ def evaluate_candidate(candidate, target_spikes, stimulation_penalty=0.01, neuro
     cost = stimulation_cost(stimulation)
     fitness -= stimulation_penalty * cost
     fitness = max(0.0, fitness)
+    print (candidate)
     return fitness, actual_spikes

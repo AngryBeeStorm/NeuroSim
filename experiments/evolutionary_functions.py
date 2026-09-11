@@ -80,10 +80,10 @@ def mutate(candidate, chance=0.5, stimulation_length=500):
 
         pulse[0] = max(0, min(pulse[0], stimulation_length - 1))
         pulse[1] = max(1, min(pulse[1], 15))
-        pulse[2] = max(0, min(pulse[2], 100))
+        pulse[2] = max(5, min(pulse[2], 100))
 
     child.sort(key=lambda pulse: pulse[0])
-    repaired_child = repair_candidate(child, stimulation_length=stimulation_length, min_gap=2)
+    repaired_child = repair_candidate(child, stimulation_length=stimulation_length, min_gap=4)
 
     return repaired_child
 
@@ -98,7 +98,7 @@ def crossover(parent_a, parent_b, stimulation_length = 500):
             child.append(copy.deepcopy(pulse_b))
 
     child.sort(key=lambda pulse: pulse[0])
-    repaired_child = repair_candidate(child, stimulation_length=stimulation_length, min_gap=2)
+    repaired_child = repair_candidate(child, stimulation_length=stimulation_length, min_gap=4)
     return repaired_child
 
 
