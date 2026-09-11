@@ -54,4 +54,12 @@ plt.title(
 )
 
 plt.legend()
+plt.tight_layout()
+
+plt.savefig(
+    "assets/surrogate_vs_evolution.png",
+    dpi=180,
+    bbox_inches="tight"
+)
+
 plt.show()
