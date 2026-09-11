@@ -1,5 +1,5 @@
 import streamlit as st
-from experiments.crossover_search_reusable import run_evolution_crossover
+from experiments.crossover_search_reusable import run_evolution_crossover, run_ml_guided_evolution
 import matplotlib.pyplot as plt
 from experiments.evolutionary_search import run_evolution_mutation
 from experiments.random_search import run_evolution_random
@@ -160,6 +160,15 @@ if preset_name != "Custom":
     )
 
 
+
+search_method = st.selectbox(
+    "Search method",
+    [
+        "Evolutionary Search",
+        "ML-Guided Evolution"
+    ]
+)
+
 noise_std = st.slider(
     "Neural noise",
     min_value=0.0,
@@ -197,24 +206,31 @@ if st.button("Find stimulation"):
     target_spikes = st.session_state.target_spikes
     st.write("Parsed target:", target_spikes)
 
-    result = run_evolution_crossover(
-        target_spikes=target_spikes,
-        num_pulses = num_spikes,
-        population_size=population_size,
-        generations=generations,
-        stimulation_length=st.session_state.stimulation_length,
-        neuron_model=model_name,
-        neuron_params=neuron_params,
-        noise_std = noise_std
-    )
-    training_X = result["training_X"]
-    training_y = result["training_y"]
 
-    print("Samples:", len(training_X))
-    print("Labels:", len(training_y))
-    print("Minimum fitness:", min(training_y))
-    print("Maximum fitness:", max(training_y))
-    print("Unique fitness values:", len(set(training_y)))
+    if search_method == "Evolutionary Search":
+        result = run_evolution_crossover(
+            target_spikes=target_spikes,
+            num_pulses = num_spikes,
+            population_size=population_size,
+            generations=generations,
+            stimulation_length=st.session_state.stimulation_length,
+            neuron_model=model_name,
+            neuron_params=neuron_params,
+            noise_std = noise_std
+        )
+
+    else:
+        result = run_ml_guided_evolution(
+            target_spikes=target_spikes,
+            num_pulses = num_spikes,
+            population_size=population_size,
+            generations=generations,
+            stimulation_length=st.session_state.stimulation_length,
+            neuron_model=model_name,
+            neuron_params=neuron_params,
+            noise_std = noise_std
+        )
+
 
     st.write(
         f"Best fitness: {result['score']:.3f}"

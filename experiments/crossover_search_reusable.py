@@ -204,7 +204,8 @@ def run_ml_guided_evolution(
 
     # ML settings
     warmup_generations=5,
-    candidate_multiplier=5,
+    candidate_multiplier=3,
+    retrain_interval = 5
 ):
     
     times = []
@@ -214,6 +215,7 @@ def run_ml_guided_evolution(
     training_y = []
 
     ml_guidance_history = []
+    surrogate = None
 
     stimulation_functions.stimulation_length = stimulation_length
     stimulation_functions.target_spikes = target_spikes
@@ -336,11 +338,12 @@ def run_ml_guided_evolution(
             offspring = generate_offspring(elite_candidates, offspring_count, stimulation_length)
         else:
             ml_guidance_history.append(True)
-            surrogate = train_surrogate(
-                training_X,
-                training_y,
-                seed=42
-            )
+            if (surrogate is None or generation % retrain_interval == 0):
+                surrogate = train_surrogate(
+                    training_X,
+                    training_y,
+                    seed=42
+                )
 
             candidate_pool_size = (offspring_count * candidate_multiplier)
 
