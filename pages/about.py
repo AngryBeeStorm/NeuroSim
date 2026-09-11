@@ -1,42 +1,41 @@
 import streamlit as st
 from neurosim.izhikevich import IzhikevichNeuron
 from neurosim.presets import IZHIKEVICH_PRESETS
-from experiments.izhikevich_test import plot_voltage
+from neurosim.plotting import get_plot_palette, apply_plot_theme, apply_axis_theme
 import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_voltage(voltages, spikes, preset_name):
+    palette = get_plot_palette()
     time = range(len(voltages))
     fig, ax = plt.subplots(figsize=(10, 4))
+    apply_plot_theme(fig, palette)
+    apply_axis_theme(ax, palette)
 
-    ax.plot(time, voltages, label="Membrane voltage")
+    ax.plot(time, voltages, label="Membrane voltage", color=palette["target"])
 
     for spike_time in spikes:
         ax.axvline(
             spike_time,
             linestyle="--",
-            alpha=0.4
+            alpha=0.4,
+            color=palette["response"]
         )
 
     ax.axhline(
         30,
         linestyle=":",
-        label="Spike threshold"
+        label="Spike threshold",
+        color=palette["stimulation"]
     )
 
-    ax.set_xlabel("Time (ms)")
-    ax.set_ylabel("Membrane voltage (mV)")
-    ax.set_title(f"Izhikevich Neuron: {preset_name}")
+    ax.set_xlabel("Time (ms)", color=palette["text_color"])
+    ax.set_ylabel("Membrane voltage (mV)", color=palette["text_color"])
+    ax.set_title(f"Izhikevich Neuron: {preset_name}", color=palette["text_color"])
     ax.legend()
 
     fig.tight_layout()
     return fig
-
-
-
-
-st.title("About NeuroSim")
-st.write("NeuroSim is a tool for simulating neural activity and optimizing stimulation protocols.")
 
 
 
@@ -84,6 +83,26 @@ if view_mode == "Quick overview":
 
     st.info(
         "NeuroSim is just a tiny educational and experimental simulation tool."
+    )
+
+    st.divider()
+
+    st.header("Why this matters")
+
+    st.markdown(
+        """
+        Being able to better control neural activity could have important medical
+        applications. Neural stimulation is already being explored and used to
+        restore or support lost functions, from hearing and movement to vision and
+        other forms of sensory feedback.
+
+        Tools like NeuroSim explore a fundamental part of that challenge:
+        **if we know the neural response we want, how can we find the stimulation
+        needed to produce it?**
+
+        Better ways of solving this problem could eventually contribute to more
+        precise and personalized neurotechnology.
+        """
     )
 
     st.divider()
@@ -249,7 +268,7 @@ if view_mode == "Quick overview":
             "Example development run comparing normal evolutionary search "
             "with ML-guided search."
         ),
-        use_container_width=True
+        width=650,
     )
 
     st.caption(
@@ -263,7 +282,7 @@ if view_mode == "Quick overview":
     # LIMITATIONS
     # -----------------------------------------------------
 
-    st.header("What NeuroSim is — and isn't")
+    st.header("What NeuroSim is, and isn't")
 
     st.markdown(
         """
@@ -315,6 +334,30 @@ else:
     st.info(
         "NeuroSim is a computational and educational prototype. "
         "It is not designed for clinical use."
+    )
+
+    st.divider()
+
+
+
+    st.header("Why this problem matters")
+
+    st.markdown(
+        """
+        Neural stimulation has the potential to help when the nervous system can no
+        longer receive, process, or communicate information normally. Technologies
+        such as cochlear implants, visual prostheses, brain and spinal stimulation,
+        and brain-computer interfaces all depend in some way on interacting with
+        neural activity.
+
+        A major challenge is determining **what stimulation will create the desired
+        neural response**. Better computational methods for exploring that question
+        could help researchers design more precise stimulation strategies while
+        reducing the amount of trial and error required.
+
+        NeuroSim is a simplified exploration of that larger problem, rather than a
+        model of any specific medical device.
+        """
     )
 
     st.divider()
@@ -589,7 +632,7 @@ else:
             "An example run comparing normal evolutionary search with "
             "ML-guided search."
         ),
-        use_container_width=True
+        width=650,
     )
 
     st.markdown(

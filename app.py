@@ -7,11 +7,6 @@ simulator = st.Page(
     default=True
 )
 
-benchmarks = st.Page(
-    "pages/benchmark.py",
-    title="Benchmark Lab",
-    icon="📊"
-)
 
 about = st.Page(
     "pages/about.py",
@@ -21,7 +16,6 @@ about = st.Page(
 
 navigation = st.navigation([
     simulator,
-    benchmarks,
     about
 ])
 

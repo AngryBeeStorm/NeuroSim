@@ -94,7 +94,7 @@ for generation in range(generations):
             parent_a = random.choice(elites)[1]
             parent_b = random.choice(elites)[1]
 
-            child = crossover(parent_a, parent_b)
+            child = crossover(parent_a, parent_b, stimulation_length=stimulation_length)
             child = mutate(child)
             new_population.append(child)
 
