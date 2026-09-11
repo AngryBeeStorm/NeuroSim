@@ -61,3 +61,21 @@ def crossover(parent_a, parent_b):
     child.sort(key=lambda pulse: pulse[0])
 
     return child
+
+
+def generate_offspring(elites, count, stimulation_length):
+    offspring = []
+
+    while len(offspring) < count:
+        parent_a = random.choice(elites)
+        parent_b = random.choice(elites)
+
+        child = crossover(parent_a, parent_b)
+        child = mutate(
+            child,
+            stimulation_length=stimulation_length
+        )
+
+        offspring.append(child)
+
+    return offspring
