@@ -84,7 +84,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = train_surrogate(
     X_train,
     y_train,
-    seed=42
 )
 
 print("\nModel trained.")

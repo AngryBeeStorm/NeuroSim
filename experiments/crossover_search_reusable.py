@@ -342,7 +342,7 @@ def run_ml_guided_evolution(
                 surrogate = train_surrogate(
                     training_X,
                     training_y,
-                    seed=42
+                    random.seed(130)
                 )
 
             candidate_pool_size = (offspring_count * candidate_multiplier)
